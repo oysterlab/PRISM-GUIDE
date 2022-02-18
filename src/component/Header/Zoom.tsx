@@ -1,7 +1,7 @@
 import React from 'react'
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '../../app/slice/app';
-import { zoom as zoomAction } from '../../app/slice/app'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '../../store/slice/app';
+import { zoom as zoomAction } from '../../store/slice/app'
 
 function Zoom() {
   const zoom = useAppSelector(state=>state.app.zoom)
