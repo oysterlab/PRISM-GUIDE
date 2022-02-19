@@ -9,54 +9,51 @@ interface CategoryData {
 
 function Inspector() {
   const selectedLayer = useAppSelector((state) => state.app.selectedLayer)
-
-  selectedLayer?.properties.reduce((catetories, property) => {
+  const isActive = selectedLayer ? 'active' : ''
+  const categories = selectedLayer?.properties.reduce((catetories, property) => {
     const category = catetories.find(({name}) => property.designCategory == name)
-    if(!category) return catetories.push{name: property.designCategory, properties:[property]}
+    if (!category) catetories.push({ name: property.designCategory, properties: [property] })
+    else category.properties.push(property)
     return catetories
   }, [] as CategoryData[])
 
   return (
-    <aside id="inspector" className="inspector active">
+    <aside id="inspector" className={`inspector ${isActive}`}>
       <h2>{selectedLayer?.name}</h2>
       <section>
         <h3>PROPERTIES</h3>
         <div className="context">
-          <div className="item" data-label="Position">
-            <div className="item-split">
-              
-              <div className="prop">
-                <label data-label="X">
-                  <input id="position-x" type="text" defaultValue="101.85px" readOnly/>
-                </label>
-                <label data-label="Y">
-                  <input id="position-y" type="text" defaultValue="106px" readOnly/>
-                </label>
-              </div>
-              
-              <div className="prop">
-                <label data-label="Y">
-                  <input id="position-y" type="text" defaultValue="106px" readOnly/>
-                </label>
-              </div>
+          {
+            categories?.map(({name, properties}) => {
+              return (
+                <div className="item" data-label={name}>
+                  <div className="item-split">                 
+                    {
+                      properties.map((_, i) => {
+                        if (i % 2 == 0) return
+                        const firstProp = properties[i]
+                        const secondProp = properties[i+1]
+                        return (
+                          <div className="prop">
+                            <label data-label={firstProp.designName}>
+                              <input type="text" defaultValue={`${firstProp.designValue}${firstProp.designUnit}`} readOnly/>
+                            </label>
+                            {secondProp && (
+                              <label data-label={secondProp.designName}>
+                                <input type="text" defaultValue={`${secondProp.designValue}${secondProp.designUnit}`} readOnly/>
+                              </label>
+                            )}
+                          </div>
+                        )
+                      })
+                    }                    
 
-              <div className="prop">
-                <label data-label="Y">
-                  <input id="position-y" type="text" defaultValue="106px" readOnly/>
-                </label>
-              </div>
-
-            </div>
-
-          </div>
-          <div className="item" data-label="Size">
-            <label data-label="Width">
-              <input id="size-width" type="text" defaultValue="68px" readOnly />
-            </label>
-            <label data-label="Height">
-              <input id="size-height" type="text" defaultValue="85px" readOnly />
-            </label>
-          </div>
+ 
+                  </div> 
+                </div>
+              )
+            })
+          }
         </div>
       </section>
       <section>
